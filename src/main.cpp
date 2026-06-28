@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "drivers/display/NQDisplay.h"
+#include "core/BootManager.h"
 
 void setup() {
     Serial.begin(115200);
@@ -9,15 +9,12 @@ void setup() {
     Serial.println("========================================");
     Serial.println("            NautQuest OS");
     Serial.println("========================================");
-    Serial.println("Sprint 002 - AMOLED Boot Screen");
+    Serial.println("Sprint 004 - Boot Manager");
 
-    NQDisplay.begin();
-    NQDisplay.showBootScreen();
-
-    Serial.println("[ OK ] NautQuest display boot screen loaded");
+    NQBoot.begin();
 }
 
 void loop() {
-    NQDisplay.update();
+    NQBoot.update();
     delay(5);
 }
