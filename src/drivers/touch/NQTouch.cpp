@@ -18,6 +18,13 @@ static TouchDrvCST92xx touch;
 static int16_t touchX[5];
 static int16_t touchY[5];
 
+static volatile bool touchInterrupt = false;
+
+static void IRAM_ATTR onTouchInterrupt()
+{
+    touchInterrupt = true;
+}
+
 bool TouchDriver::begin()
 {
     Serial.println("[NQTouch] Initializing CST9217 touch...");
@@ -50,6 +57,10 @@ bool TouchDriver::begin()
     touch.setMaxCoordinates(TOUCH_WIDTH, TOUCH_HEIGHT);
     touch.setMirrorXY(true, true);
 
+    pinMode(TOUCH_IRQ, INPUT_PULLUP);
+    attachInterrupt(TOUCH_IRQ, onTouchInterrupt, FALLING);
+
+    Serial.println("[NQTouch] Touch IRQ configured");
     Serial.println("[NQTouch] Touch coordinates configured");
 
     initialized = true;
@@ -63,6 +74,14 @@ void TouchDriver::read(lv_indev_drv_t *driver, lv_indev_data_t *data)
         data->state = LV_INDEV_STATE_REL;
         return;
     }
+
+    if (!touchInterrupt)
+    {
+        data->state = LV_INDEV_STATE_REL;
+        return;
+    }
+
+    touchInterrupt = false;
 
     uint8_t touched = touch.getPoint(touchX, touchY, touch.getSupportTouchPoint());
 
