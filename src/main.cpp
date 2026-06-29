@@ -9,7 +9,7 @@ void setup() {
     Serial.println("========================================");
     Serial.println("            NautQuest OS");
     Serial.println("========================================");
-    Serial.println("Sprint 004 - Boot Manager");
+    Serial.println("Sprint 005 - Screen Manager");
 
     NQBoot.begin();
 }
