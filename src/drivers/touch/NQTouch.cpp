@@ -35,7 +35,6 @@ bool TouchDriver::begin()
     digitalWrite(TOUCH_RST, HIGH);
     delay(100);
 
-    Wire.begin(TOUCH_SDA, TOUCH_SCL);
 
     touch.setPins(TOUCH_RST, TOUCH_IRQ);
 
