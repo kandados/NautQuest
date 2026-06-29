@@ -3,10 +3,25 @@
 #include <Arduino.h>
 
 #include "ui/desktop/DesktopScreen.h"
+#include "ui/settings/SettingsScreen.h"
 
 void ScreenManager::show(ScreenID screen)
 {
+    if (screen == activeScreen)
+    {
+        return;
+    }
+
+    lastScreen = activeScreen;
     activeScreen = screen;
+
+    Serial.println("--------------------------------");
+    Serial.print("[ScreenManager] Previous: ");
+    Serial.println(screenName(lastScreen));
+
+    Serial.print("[ScreenManager] Current : ");
+    Serial.println(screenName(activeScreen));
+    Serial.println("--------------------------------");
 
     switch (screen)
     {
@@ -20,7 +35,8 @@ void ScreenManager::show(ScreenID screen)
             break;
 
         case ScreenID::Settings:
-            Serial.println("[ScreenManager] SettingsScreen not implemented yet");
+            Serial.println("[ScreenManager] Showing SettingsScreen");
+            NQSettings.show();
             break;
 
         case ScreenID::Compass:
@@ -40,6 +56,48 @@ void ScreenManager::show(ScreenID screen)
 ScreenID ScreenManager::currentScreen() const
 {
     return activeScreen;
+}
+
+ScreenID ScreenManager::previousScreen() const
+{
+    return lastScreen;
+}
+
+const char* ScreenManager::currentScreenName() const
+{
+    return screenName(activeScreen);
+}
+
+const char* ScreenManager::previousScreenName() const
+{
+    return screenName(lastScreen);
+}
+
+const char* ScreenManager::screenName(ScreenID screen) const
+{
+    switch (screen)
+    {
+        case ScreenID::Boot:
+            return "Boot";
+
+        case ScreenID::Desktop:
+            return "Desktop";
+
+        case ScreenID::Settings:
+            return "Settings";
+
+        case ScreenID::Compass:
+            return "Compass";
+
+        case ScreenID::Calendar:
+            return "Calendar";
+
+        case ScreenID::AI:
+            return "AI";
+
+        default:
+            return "Unknown";
+    }
 }
 
 ScreenManager NQScreen;

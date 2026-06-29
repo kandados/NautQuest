@@ -11,10 +11,7 @@ void BootManager::begin()
 
     bootStartTime = millis();
 
-    // Inicializa la pantalla AMOLED
     NQDisplay.begin();
-
-    // Muestra la pantalla de arranque
     NQDisplay.showBootScreen();
 
     Serial.println("[BootManager] Display initialized");
@@ -22,7 +19,6 @@ void BootManager::begin()
 
 void BootManager::update()
 {
-    // Espera 3 segundos antes de cambiar al escritorio
     if (!bootCompleted && millis() - bootStartTime >= 3000)
     {
         bootCompleted = true;
@@ -30,13 +26,17 @@ void BootManager::update()
         Serial.println("[BootManager] Boot completed");
         Serial.println("[BootManager] Requesting Desktop screen...");
 
-        // Pide al ScreenManager que cambie al escritorio
         NQScreen.show(ScreenID::Desktop);
 
         Serial.println("[BootManager] Desktop request sent");
+
+        Serial.print("[BootManager] Active screen: ");
+        Serial.println(NQScreen.currentScreenName());
+
+        Serial.print("[BootManager] Previous screen: ");
+        Serial.println(NQScreen.previousScreenName());
     }
 
-    // Mantiene LVGL funcionando
     NQDisplay.update();
 }
 
