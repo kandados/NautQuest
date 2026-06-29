@@ -4,6 +4,8 @@
 #include <lvgl.h>
 #include "Arduino_GFX_Library.h"
 
+#include "drivers/touch/NQTouch.h"
+
 // Pines oficiales Waveshare ESP32-S3-Touch-AMOLED-1.75
 #define LCD_SDIO0 4
 #define LCD_SDIO1 5
@@ -41,7 +43,8 @@ static Arduino_CO5300 *gfx = new Arduino_CO5300(
     0
 );
 
-static void nq_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
+static void nq_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
+{
     uint32_t w = area->x2 - area->x1 + 1;
     uint32_t h = area->y2 - area->y1 + 1;
 
@@ -54,11 +57,18 @@ static void nq_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t
     lv_disp_flush_ready(disp);
 }
 
-static void nq_lvgl_tick(void *arg) {
+static void nq_lvgl_tick(void *arg)
+{
     lv_tick_inc(NQ_LVGL_TICK_PERIOD_MS);
 }
 
-void NautQuestDisplay::begin() {
+static void nq_touch_read(lv_indev_drv_t *driver, lv_indev_data_t *data)
+{
+    NQTouch.read(driver, data);
+}
+
+void NautQuestDisplay::begin()
+{
     Serial.println("[NQDisplay] Initializing AMOLED...");
 
     gfx->begin();
@@ -78,6 +88,23 @@ void NautQuestDisplay::begin() {
 
     lv_disp_drv_register(&disp_drv);
 
+    if (NQTouch.begin())
+    {
+        static lv_indev_drv_t indev_drv;
+        lv_indev_drv_init(&indev_drv);
+
+        indev_drv.type = LV_INDEV_TYPE_POINTER;
+        indev_drv.read_cb = nq_touch_read;
+
+        lv_indev_drv_register(&indev_drv);
+
+        Serial.println("[NQDisplay] Touch input registered");
+    }
+    else
+    {
+        Serial.println("[NQDisplay] Touch input not available");
+    }
+
     const esp_timer_create_args_t lvgl_tick_timer_args = {
         .callback = &nq_lvgl_tick,
         .name = "nq_lvgl_tick"
@@ -90,7 +117,8 @@ void NautQuestDisplay::begin() {
     Serial.println("[NQDisplay] AMOLED ready");
 }
 
-void NautQuestDisplay::showBootScreen() {
+void NautQuestDisplay::showBootScreen()
+{
     lv_obj_clean(lv_scr_act());
 
     lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), 0);
@@ -111,7 +139,8 @@ void NautQuestDisplay::showBootScreen() {
     lv_timer_handler();
 }
 
-void NautQuestDisplay::update() {
+void NautQuestDisplay::update()
+{
     lv_timer_handler();
 }
 
