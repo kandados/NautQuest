@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 #include "drivers/display/NQDisplay.h"
-#include "ui/desktop/DesktopScreen.h"
+#include "core/ScreenManager.h"
 
 void BootManager::begin()
 {
@@ -28,12 +28,12 @@ void BootManager::update()
         bootCompleted = true;
 
         Serial.println("[BootManager] Boot completed");
-        Serial.println("[BootManager] Desktop loading...");
+        Serial.println("[BootManager] Requesting Desktop screen...");
 
-        // Cambia al escritorio
-        NQDesktop.show();
+        // Pide al ScreenManager que cambie al escritorio
+        NQScreen.show(ScreenID::Desktop);
 
-        Serial.println("[BootManager] Desktop loaded");
+        Serial.println("[BootManager] Desktop request sent");
     }
 
     // Mantiene LVGL funcionando
