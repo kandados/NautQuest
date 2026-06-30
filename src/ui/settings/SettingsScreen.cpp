@@ -1,6 +1,20 @@
 #include "SettingsScreen.h"
 
+#include <Arduino.h>
 #include <lvgl.h>
+
+#include "core/ScreenManager.h"
+
+static void backButtonEventHandler(lv_event_t *event)
+{
+    lv_event_code_t code = lv_event_get_code(event);
+
+    if (code == LV_EVENT_CLICKED)
+    {
+        Serial.println("[SettingsScreen] Back button clicked");
+        NQScreen.show(ScreenID::Desktop);
+    }
+}
 
 void SettingsScreen::show()
 {
@@ -13,25 +27,35 @@ void SettingsScreen::show()
     lv_label_set_text(title, "Settings");
     lv_obj_set_style_text_color(title, lv_color_white(), 0);
     lv_obj_set_style_text_font(title, &lv_font_montserrat_40, 0);
-    lv_obj_align(title, LV_ALIGN_CENTER, 0, -80);
+    lv_obj_align(title, LV_ALIGN_CENTER, 0, -95);
 
     lv_obj_t *option1 = lv_label_create(lv_scr_act());
     lv_label_set_text(option1, "Display");
     lv_obj_set_style_text_color(option1, lv_color_white(), 0);
     lv_obj_set_style_text_font(option1, &lv_font_montserrat_28, 0);
-    lv_obj_align(option1, LV_ALIGN_CENTER, 0, -20);
+    lv_obj_align(option1, LV_ALIGN_CENTER, 0, -35);
 
     lv_obj_t *option2 = lv_label_create(lv_scr_act());
     lv_label_set_text(option2, "Sound");
     lv_obj_set_style_text_color(option2, lv_color_white(), 0);
     lv_obj_set_style_text_font(option2, &lv_font_montserrat_28, 0);
-    lv_obj_align(option2, LV_ALIGN_CENTER, 0, 35);
+    lv_obj_align(option2, LV_ALIGN_CENTER, 0, 20);
 
     lv_obj_t *option3 = lv_label_create(lv_scr_act());
     lv_label_set_text(option3, "System");
     lv_obj_set_style_text_color(option3, lv_color_white(), 0);
     lv_obj_set_style_text_font(option3, &lv_font_montserrat_28, 0);
-    lv_obj_align(option3, LV_ALIGN_CENTER, 0, 90);
+    lv_obj_align(option3, LV_ALIGN_CENTER, 0, 75);
+
+    lv_obj_t *backButton = lv_btn_create(lv_scr_act());
+    lv_obj_set_size(backButton, 180, 55);
+    lv_obj_align(backButton, LV_ALIGN_CENTER, 0, 140);
+    lv_obj_add_event_cb(backButton, backButtonEventHandler, LV_EVENT_CLICKED, nullptr);
+
+    lv_obj_t *backLabel = lv_label_create(backButton);
+    lv_label_set_text(backLabel, "Back");
+    lv_obj_set_style_text_font(backLabel, &lv_font_montserrat_24, 0);
+    lv_obj_center(backLabel);
 
     lv_timer_handler();
 }

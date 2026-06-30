@@ -4,37 +4,51 @@
 
 #include "drivers/display/NQDisplay.h"
 #include "core/ScreenManager.h"
+#include "core/MissionManager.h"
 
 void BootManager::begin()
 {
-    Serial.println("[BootManager] Starting NautQuest boot sequence");
-
-    bootStartTime = millis();
+    Serial.println("[BootManager] Iniciando secuencia de arranque NautQuest");
 
     NQDisplay.begin();
-    NQDisplay.showBootScreen();
+    NQMission.begin();
 
-    Serial.println("[BootManager] Display initialized");
+    phase = BootPhase::Mascot;
+    phaseStartTime = millis();
+
+    NQDisplay.showMascotBootScreen();
+
+    Serial.println("[BootManager] Fase inicial: Mascota");
 }
 
 void BootManager::update()
 {
-    if (!bootCompleted && millis() - bootStartTime >= 3000)
-    {
-        bootCompleted = true;
+    unsigned long now = millis();
 
-        Serial.println("[BootManager] Boot completed");
-        Serial.println("[BootManager] Requesting Desktop screen...");
+    if (phase == BootPhase::Mascot && now - phaseStartTime >= 2500)
+    {
+        phase = BootPhase::Logo;
+        phaseStartTime = now;
+
+        Serial.println("[BootManager] Fase: Logo");
+        NQDisplay.showLogoBootScreen();
+    }
+    else if (phase == BootPhase::Logo && now - phaseStartTime >= 2500)
+    {
+        phase = BootPhase::Adventure;
+        phaseStartTime = now;
+
+        Serial.println("[BootManager] Fase: Mensaje de aventura");
+        NQDisplay.showAdventureBootScreen();
+    }
+    else if (phase == BootPhase::Adventure && now - phaseStartTime >= 2500)
+    {
+        phase = BootPhase::Completed;
+
+        Serial.println("[BootManager] Arranque completado");
+        Serial.println("[BootManager] Mostrando Inicio");
 
         NQScreen.show(ScreenID::Desktop);
-
-        Serial.println("[BootManager] Desktop request sent");
-
-        Serial.print("[BootManager] Active screen: ");
-        Serial.println(NQScreen.currentScreenName());
-
-        Serial.print("[BootManager] Previous screen: ");
-        Serial.println(NQScreen.previousScreenName());
     }
 
     NQDisplay.update();

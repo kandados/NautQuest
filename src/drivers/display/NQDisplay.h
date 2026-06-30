@@ -3,7 +3,11 @@
 class NautQuestDisplay {
 public:
     void begin();
-    void showBootScreen();
+
+    void showMascotBootScreen();
+    void showLogoBootScreen();
+    void showAdventureBootScreen();
+
     void update();
 };
 

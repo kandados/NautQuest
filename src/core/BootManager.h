@@ -1,13 +1,23 @@
 #pragma once
 
-class BootManager {
+class BootManager
+{
 public:
     void begin();
     void update();
 
 private:
-    bool bootCompleted = false;
-    unsigned long bootStartTime = 0;
+    enum class BootPhase
+    {
+        Mascot,
+        Logo,
+        Adventure,
+        Completed
+    };
+
+    BootPhase phase = BootPhase::Mascot;
+
+    unsigned long phaseStartTime = 0;
 };
 
 extern BootManager NQBoot;

@@ -117,7 +117,27 @@ void NautQuestDisplay::begin()
     Serial.println("[NQDisplay] AMOLED ready");
 }
 
-void NautQuestDisplay::showBootScreen()
+void NautQuestDisplay::showMascotBootScreen()
+{
+    lv_obj_clean(lv_scr_act());
+
+    lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
+
+    lv_obj_t *label = lv_label_create(lv_scr_act());
+
+    lv_label_set_text(label,
+                      " (^_^)\n"
+                      );
+
+    lv_obj_set_style_text_color(label, lv_color_white(), 0);
+    lv_obj_set_style_text_font(label, &lv_font_montserrat_36, 0);
+    lv_obj_center(label);
+
+    lv_timer_handler();
+}
+
+void NautQuestDisplay::showLogoBootScreen()
 {
     lv_obj_clean(lv_scr_act());
 
@@ -125,16 +145,36 @@ void NautQuestDisplay::showBootScreen()
     lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
 
     lv_obj_t *title = lv_label_create(lv_scr_act());
-    lv_label_set_text(title, "NAUTQUEST");
+    lv_label_set_text(title, "NautQuest");
     lv_obj_set_style_text_color(title, lv_color_white(), 0);
     lv_obj_set_style_text_font(title, &lv_font_montserrat_48, 0);
-    lv_obj_align(title, LV_ALIGN_CENTER, 0, -35);
+    lv_obj_align(title, LV_ALIGN_CENTER, 0, -25);
 
     lv_obj_t *subtitle = lv_label_create(lv_scr_act());
-    lv_label_set_text(subtitle, "BOOTING...");
+    lv_label_set_text(subtitle, "By KandadosDev");
     lv_obj_set_style_text_color(subtitle, lv_color_white(), 0);
-    lv_obj_set_style_text_font(subtitle, &lv_font_montserrat_36, 0);
-    lv_obj_align(subtitle, LV_ALIGN_CENTER, 0, 45);
+    lv_obj_set_style_text_font(subtitle, &lv_font_montserrat_24, 0);
+    lv_obj_align(subtitle, LV_ALIGN_CENTER, 0, 35);
+
+    lv_timer_handler();
+}
+
+void NautQuestDisplay::showAdventureBootScreen()
+{
+    lv_obj_clean(lv_scr_act());
+
+    lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
+
+    lv_obj_t *label = lv_label_create(lv_scr_act());
+    lv_label_set_text(label,
+                      "Comienza\n"
+                      "Tu aventura...");
+
+    lv_obj_set_style_text_color(label, lv_color_white(), 0);
+    lv_obj_set_style_text_font(label, &lv_font_montserrat_36, 0);
+    lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_center(label);
 
     lv_timer_handler();
 }
