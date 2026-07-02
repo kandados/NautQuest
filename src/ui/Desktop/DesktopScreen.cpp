@@ -1,11 +1,11 @@
-
-#include "core/MissionManager.h"
 #include "DesktopScreen.h"
-#include <Arduino.h>
 
+#include <Arduino.h>
 #include <lvgl.h>
 
+#include "core/NavigationManager.h"
 #include "core/ScreenManager.h"
+#include "core/theme/ThemeManager.h"
 
 static void settingsButtonEventHandler(lv_event_t *event)
 {
@@ -13,55 +13,84 @@ static void settingsButtonEventHandler(lv_event_t *event)
 
     if (code == LV_EVENT_CLICKED)
     {
-        Serial.println("[DesktopScreen] Settings button clicked");
-        NQScreen.show(ScreenID::Settings);
+        Serial.println("[Inicio] Ajustes pulsado");
+        NQNavigation.goTo(ScreenID::Settings);
     }
 }
+
 void DesktopScreen::show()
 {
     lv_obj_clean(lv_scr_act());
 
-    lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), 0);
+    lv_obj_set_style_bg_color(lv_scr_act(), NQTheme.background(), 0);
     lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
 
-    lv_obj_t *projectName = lv_label_create(lv_scr_act());
-    lv_label_set_text(projectName, "NautQuest");
-    lv_obj_set_style_text_color(projectName, lv_color_white(), 0);
-    lv_obj_set_style_text_font(projectName, &lv_font_montserrat_48, 0);
-    lv_obj_align(projectName, LV_ALIGN_CENTER, 0, -90);
+    lv_obj_t *title = lv_label_create(lv_scr_act());
+    lv_label_set_text(title, "NautQuest");
+    lv_obj_set_style_text_color(title, NQTheme.text(), 0);
+    lv_obj_set_style_text_font(title, &lv_font_montserrat_42, 0);
+    lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);
 
-    lv_obj_t *author = lv_label_create(lv_scr_act());
-    lv_label_set_text(author, "By Kandadosdev");
-    lv_obj_set_style_text_color(author, lv_color_white(), 0);
-    lv_obj_set_style_text_font(author, &lv_font_montserrat_22, 0);
-    lv_obj_align(author, LV_ALIGN_CENTER, 0, -42);
+    lv_obj_t *missionsButton = lv_btn_create(lv_scr_act());
+    lv_obj_set_style_bg_color(missionsButton, NQTheme.primaryButton(), 0);
+    lv_obj_set_size(missionsButton, 220, 50);
+    lv_obj_align(missionsButton, LV_ALIGN_CENTER, 0, -25);
+    lv_obj_add_event_cb(missionsButton, [](lv_event_t *event) {
+        if (lv_event_get_code(event) == LV_EVENT_CLICKED)
+        {
+            Serial.println("[Inicio] Misiones pulsado");
+            NQNavigation.goTo(ScreenID::Missions);
+        }
+    }, LV_EVENT_CLICKED, nullptr);
 
-    lv_obj_t *desktop = lv_label_create(lv_scr_act());
-    lv_label_set_text(desktop, "DESKTOP");
-    lv_obj_set_style_text_color(desktop, lv_color_white(), 0);
-    lv_obj_set_style_text_font(desktop, &lv_font_montserrat_32, 0);
-    lv_obj_align(desktop, LV_ALIGN_CENTER, 0, 15);
+    lv_obj_t *missionsLabel = lv_label_create(missionsButton);
+    lv_label_set_text(missionsLabel, "Misiones");
+    lv_obj_set_style_text_font(missionsLabel, &lv_font_montserrat_24, 0);
+    lv_obj_center(missionsLabel);
 
-    lv_obj_t *missionTitle = lv_label_create(lv_scr_act());
-    lv_label_set_text(missionTitle, "Mision activa");
-    lv_obj_set_style_text_color(missionTitle, lv_color_white(), 0);
-    lv_obj_set_style_text_font(missionTitle, &lv_font_montserrat_20, 0);
-    lv_obj_align(missionTitle, LV_ALIGN_CENTER, 0, 55);
+    lv_obj_t *logbookButton = lv_btn_create(lv_scr_act());
+    lv_obj_set_style_bg_color(logbookButton, NQTheme.primaryButton(), 0);
+    lv_obj_set_size(logbookButton, 220, 50);
+    lv_obj_align(logbookButton, LV_ALIGN_CENTER, 0, 30);
+    lv_obj_add_event_cb(logbookButton, [](lv_event_t *event) {
+        if (lv_event_get_code(event) == LV_EVENT_CLICKED)
+        {
+            Serial.println("[Inicio] Bitacora pulsado");
+            NQNavigation.goTo(ScreenID::Logbook);
+        }
+    }, LV_EVENT_CLICKED, nullptr);
 
-    lv_obj_t *missionText = lv_label_create(lv_scr_act());
-    lv_label_set_text(missionText, NQMission.currentMission());
-    lv_obj_set_style_text_color(missionText, lv_color_white(), 0);
-    lv_obj_set_style_text_font(missionText, &lv_font_montserrat_22, 0);
-    lv_obj_align(missionText, LV_ALIGN_CENTER, 0, 82);
+    lv_obj_t *logbookLabel = lv_label_create(logbookButton);
+    lv_label_set_text(logbookLabel, "Bitacora");
+    lv_obj_set_style_text_font(logbookLabel, &lv_font_montserrat_24, 0);
+    lv_obj_center(logbookLabel);
+
+    lv_obj_t *oracleButton = lv_btn_create(lv_scr_act());
+    lv_obj_set_style_bg_color(oracleButton, NQTheme.primaryButton(), 0);
+    lv_obj_set_size(oracleButton, 220, 50);
+    lv_obj_align(oracleButton, LV_ALIGN_CENTER, 0, 85);
+    lv_obj_add_event_cb(oracleButton, [](lv_event_t *event) {
+        if (lv_event_get_code(event) == LV_EVENT_CLICKED)
+        {
+            Serial.println("[Inicio] Oraculo pulsado");
+            NQNavigation.goTo(ScreenID::Oracle);
+        }
+    }, LV_EVENT_CLICKED, nullptr);
+
+    lv_obj_t *oracleLabel = lv_label_create(oracleButton);
+    lv_label_set_text(oracleLabel, "Oraculo");
+    lv_obj_set_style_text_font(oracleLabel, &lv_font_montserrat_24, 0);
+    lv_obj_center(oracleLabel);
 
     lv_obj_t *settingsButton = lv_btn_create(lv_scr_act());
-    lv_obj_set_size(settingsButton, 190, 55);
-    lv_obj_align(settingsButton, LV_ALIGN_CENTER, 0, 145);
+    lv_obj_set_style_bg_color(settingsButton, NQTheme.settingsButton(), 0);
+    lv_obj_set_size(settingsButton, 150, 45);
+    lv_obj_align(settingsButton, LV_ALIGN_CENTER, 0, 155);
     lv_obj_add_event_cb(settingsButton, settingsButtonEventHandler, LV_EVENT_CLICKED, nullptr);
 
     lv_obj_t *settingsLabel = lv_label_create(settingsButton);
-    lv_label_set_text(settingsLabel, "Settings");
-    lv_obj_set_style_text_font(settingsLabel, &lv_font_montserrat_24, 0);
+    lv_label_set_text(settingsLabel, "Ajustes");
+    lv_obj_set_style_text_font(settingsLabel, &lv_font_montserrat_20, 0);
     lv_obj_center(settingsLabel);
 
     lv_timer_handler();

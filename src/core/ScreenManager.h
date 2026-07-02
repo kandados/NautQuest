@@ -5,6 +5,10 @@ enum class ScreenID
     Boot,
     Desktop,
     Settings,
+    Missions,
+    MissionDetail,
+    Logbook,
+    Oracle,
     Compass,
     Calendar,
     AI

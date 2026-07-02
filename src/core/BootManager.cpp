@@ -2,23 +2,29 @@
 
 #include <Arduino.h>
 
+#include "core/NavigationManager.h"
+#include "core/theme/ThemeManager.h"
 #include "drivers/display/NQDisplay.h"
 #include "core/ScreenManager.h"
 #include "core/MissionManager.h"
 
 void BootManager::begin()
 {
-    Serial.println("[BootManager] Iniciando secuencia de arranque NautQuest");
+    Serial.print("[BootManager] Inicio ms=");
+    Serial.println(millis());
 
     NQDisplay.begin();
     NQMission.begin();
+    NQTheme.begin();
+    NQNavigation.begin();
 
     phase = BootPhase::Mascot;
     phaseStartTime = millis();
 
     NQDisplay.showMascotBootScreen();
 
-    Serial.println("[BootManager] Fase inicial: Mascota");
+    Serial.print("[BootManager] Fase inicial: Mascota ms=");
+    Serial.println(millis());
 }
 
 void BootManager::update()
@@ -30,7 +36,9 @@ void BootManager::update()
         phase = BootPhase::Logo;
         phaseStartTime = now;
 
-        Serial.println("[BootManager] Fase: Logo");
+        Serial.print("[BootManager] Fase: Logo ms=");
+        Serial.println(millis());
+
         NQDisplay.showLogoBootScreen();
     }
     else if (phase == BootPhase::Logo && now - phaseStartTime >= 2500)
@@ -38,16 +46,19 @@ void BootManager::update()
         phase = BootPhase::Adventure;
         phaseStartTime = now;
 
-        Serial.println("[BootManager] Fase: Mensaje de aventura");
+        Serial.print("[BootManager] Fase: Mensaje de aventura ms=");
+        Serial.println(millis());
+
         NQDisplay.showAdventureBootScreen();
     }
     else if (phase == BootPhase::Adventure && now - phaseStartTime >= 2500)
     {
         phase = BootPhase::Completed;
 
-        Serial.println("[BootManager] Arranque completado");
-        Serial.println("[BootManager] Mostrando Inicio");
+        Serial.print("[BootManager] Arranque completado ms=");
+        Serial.println(millis());
 
+        Serial.println("[BootManager] Mostrando Inicio");
         NQScreen.show(ScreenID::Desktop);
     }
 

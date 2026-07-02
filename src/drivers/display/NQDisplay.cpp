@@ -69,12 +69,26 @@ static void nq_touch_read(lv_indev_drv_t *driver, lv_indev_data_t *data)
 
 void NautQuestDisplay::begin()
 {
-    Serial.println("[NQDisplay] Initializing AMOLED...");
+    Serial.print("[NQDisplay] begin start ms=");
+    Serial.println(millis());
 
+    Serial.print("[NQDisplay] gfx begin start ms=");
+    Serial.println(millis());
     gfx->begin();
-    gfx->setBrightness(200);
+    Serial.print("[NQDisplay] gfx begin end ms=");
+    Serial.println(millis());
 
+    Serial.print("[NQDisplay] brightness start ms=");
+    Serial.println(millis());
+    gfx->setBrightness(200);
+    Serial.print("[NQDisplay] brightness end ms=");
+    Serial.println(millis());
+
+    Serial.print("[NQDisplay] lvgl init start ms=");
+    Serial.println(millis());
     lv_init();
+    Serial.print("[NQDisplay] lvgl init end ms=");
+    Serial.println(millis());
 
     lv_disp_draw_buf_init(&draw_buf, buf, NULL, LCD_WIDTH * LCD_HEIGHT / 10);
 
@@ -88,8 +102,14 @@ void NautQuestDisplay::begin()
 
     lv_disp_drv_register(&disp_drv);
 
+    Serial.print("[NQDisplay] touch begin start ms=");
+    Serial.println(millis());
+
     if (NQTouch.begin())
     {
+        Serial.print("[NQDisplay] touch begin end ms=");
+        Serial.println(millis());
+
         static lv_indev_drv_t indev_drv;
         lv_indev_drv_init(&indev_drv);
 
@@ -102,6 +122,8 @@ void NautQuestDisplay::begin()
     }
     else
     {
+        Serial.print("[NQDisplay] touch begin failed ms=");
+        Serial.println(millis());
         Serial.println("[NQDisplay] Touch input not available");
     }
 
@@ -114,7 +136,8 @@ void NautQuestDisplay::begin()
     esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer);
     esp_timer_start_periodic(lvgl_tick_timer, NQ_LVGL_TICK_PERIOD_MS * 1000);
 
-    Serial.println("[NQDisplay] AMOLED ready");
+    Serial.print("[NQDisplay] AMOLED ready ms=");
+    Serial.println(millis());
 }
 
 void NautQuestDisplay::showMascotBootScreen()

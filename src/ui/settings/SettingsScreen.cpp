@@ -1,9 +1,11 @@
-#include "SettingsScreen.h"
 
+#include "SettingsScreen.h"
+#include "core/theme/ThemeManager.h"
 #include <Arduino.h>
 #include <lvgl.h>
 
 #include "core/ScreenManager.h"
+#include "core/NavigationManager.h"
 
 static void backButtonEventHandler(lv_event_t *event)
 {
@@ -12,7 +14,7 @@ static void backButtonEventHandler(lv_event_t *event)
     if (code == LV_EVENT_CLICKED)
     {
         Serial.println("[SettingsScreen] Back button clicked");
-        NQScreen.show(ScreenID::Desktop);
+        NQNavigation.goBack();
     }
 }
 
@@ -24,36 +26,37 @@ void SettingsScreen::show()
     lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
 
     lv_obj_t *title = lv_label_create(lv_scr_act());
-    lv_label_set_text(title, "Settings");
+    lv_label_set_text(title, "Configuracion");
     lv_obj_set_style_text_color(title, lv_color_white(), 0);
     lv_obj_set_style_text_font(title, &lv_font_montserrat_40, 0);
     lv_obj_align(title, LV_ALIGN_CENTER, 0, -95);
 
     lv_obj_t *option1 = lv_label_create(lv_scr_act());
-    lv_label_set_text(option1, "Display");
+    lv_label_set_text(option1, "Pantalla");
     lv_obj_set_style_text_color(option1, lv_color_white(), 0);
     lv_obj_set_style_text_font(option1, &lv_font_montserrat_28, 0);
     lv_obj_align(option1, LV_ALIGN_CENTER, 0, -35);
 
     lv_obj_t *option2 = lv_label_create(lv_scr_act());
-    lv_label_set_text(option2, "Sound");
+    lv_label_set_text(option2, "Sonido");
     lv_obj_set_style_text_color(option2, lv_color_white(), 0);
     lv_obj_set_style_text_font(option2, &lv_font_montserrat_28, 0);
     lv_obj_align(option2, LV_ALIGN_CENTER, 0, 20);
 
     lv_obj_t *option3 = lv_label_create(lv_scr_act());
-    lv_label_set_text(option3, "System");
+    lv_label_set_text(option3, "Sistema");
     lv_obj_set_style_text_color(option3, lv_color_white(), 0);
     lv_obj_set_style_text_font(option3, &lv_font_montserrat_28, 0);
     lv_obj_align(option3, LV_ALIGN_CENTER, 0, 75);
 
     lv_obj_t *backButton = lv_btn_create(lv_scr_act());
+    lv_obj_set_style_bg_color(backButton, NQTheme.backButton(), 0);
     lv_obj_set_size(backButton, 180, 55);
     lv_obj_align(backButton, LV_ALIGN_CENTER, 0, 140);
     lv_obj_add_event_cb(backButton, backButtonEventHandler, LV_EVENT_CLICKED, nullptr);
 
     lv_obj_t *backLabel = lv_label_create(backButton);
-    lv_label_set_text(backLabel, "Back");
+    lv_label_set_text(backLabel, "Atras");
     lv_obj_set_style_text_font(backLabel, &lv_font_montserrat_24, 0);
     lv_obj_center(backLabel);
 

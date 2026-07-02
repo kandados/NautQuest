@@ -4,6 +4,10 @@
 
 #include "ui/desktop/DesktopScreen.h"
 #include "ui/settings/SettingsScreen.h"
+#include "ui/missions/MissionsScreen.h"
+#include "ui/missions/MissionDetailScreen.h"
+#include "ui/logbook/LogbookScreen.h"
+#include "ui/oracle/OracleScreen.h"
 
 void ScreenManager::show(ScreenID screen)
 {
@@ -37,6 +41,26 @@ void ScreenManager::show(ScreenID screen)
         case ScreenID::Settings:
             Serial.println("[ScreenManager] Showing SettingsScreen");
             NQSettings.show();
+            break;
+
+        case ScreenID::Missions:
+            Serial.println("[ScreenManager] Showing MissionsScreen");
+            NQMissions.show();
+            break;
+
+        case ScreenID::MissionDetail:
+            Serial.println("[ScreenManager] Showing MissionDetailScreen");
+            NQMissionDetail.show();
+            break;
+
+        case ScreenID::Logbook:
+            Serial.println("[ScreenManager] Showing LogbookScreen");
+            NQLogbook.show();
+            break;
+
+        case ScreenID::Oracle:
+            Serial.println("[ScreenManager] Showing OracleScreen");
+            NQOracle.show();
             break;
 
         case ScreenID::Compass:
@@ -81,10 +105,22 @@ const char* ScreenManager::screenName(ScreenID screen) const
             return "Boot";
 
         case ScreenID::Desktop:
-            return "Desktop";
+            return "Inicio";
 
         case ScreenID::Settings:
-            return "Settings";
+            return "Ajustes";
+
+        case ScreenID::Missions:
+            return "Misiones";
+
+        case ScreenID::MissionDetail:
+            return "Detalle mision";
+
+        case ScreenID::Logbook:
+            return "Bitacora";
+
+        case ScreenID::Oracle:
+            return "Oraculo";
 
         case ScreenID::Compass:
             return "Compass";
