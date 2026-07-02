@@ -1,7 +1,7 @@
 #include "BootManager.h"
 
 #include <Arduino.h>
-
+// #include "core/ExperienceManager.h"
 #include "core/NavigationManager.h"
 #include "core/theme/ThemeManager.h"
 #include "drivers/display/NQDisplay.h"
@@ -15,6 +15,7 @@ void BootManager::begin()
 
     NQDisplay.begin();
     NQMission.begin();
+    // NQExperience.begin();
     NQTheme.begin();
     NQNavigation.begin();
 
