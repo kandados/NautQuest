@@ -7,6 +7,8 @@
 #include "core/NavigationManager.h"
 #include "core/theme/ThemeManager.h"
 
+
+
 static void backButtonEventHandler(lv_event_t *event)
 {
     if (lv_event_get_code(event) == LV_EVENT_CLICKED)
@@ -65,17 +67,17 @@ void MissionDetailScreen::show()
     lv_label_set_text(reward, rewardText);
     lv_obj_set_style_text_color(reward, accentBlue, 0);
     lv_obj_set_style_text_font(reward, &lv_font_montserrat_20, 0);
-    lv_obj_align(reward, LV_ALIGN_CENTER, 0, 75);
+    lv_obj_align(reward, LV_ALIGN_CENTER, 0, 70);
 
     lv_obj_t *level = lv_label_create(lv_scr_act());
     lv_label_set_text(level, "Completado");
     lv_obj_set_style_text_color(level, accentBlue, 0);
     lv_obj_set_style_text_font(level, &lv_font_montserrat_16, 0);
-    lv_obj_align(level, LV_ALIGN_CENTER, -50, 108);
+    lv_obj_align(level, LV_ALIGN_CENTER, -50, 100);
 
     lv_obj_t *progressBar = lv_bar_create(lv_scr_act());
     lv_obj_set_size(progressBar, 250, 14);
-    lv_obj_align(progressBar, LV_ALIGN_CENTER, -35, 130);
+    lv_obj_align(progressBar, LV_ALIGN_CENTER, -35, 120);
     lv_bar_set_range(progressBar, 0, 100);
     lv_bar_set_value(progressBar, mission.progress(), LV_ANIM_OFF);
 
@@ -86,7 +88,8 @@ void MissionDetailScreen::show()
     lv_label_set_text(progressLabel, progressText);
     lv_obj_set_style_text_color(progressLabel, accentBlue, 0);
     lv_obj_set_style_text_font(progressLabel, &lv_font_montserrat_18, 0);
-    lv_obj_align(progressLabel, LV_ALIGN_CENTER, 145, 127);
+    lv_obj_align(progressLabel, LV_ALIGN_CENTER, 145, 117);
+
     lv_obj_t *backButton = lv_btn_create(lv_scr_act());
     lv_obj_set_style_bg_color(backButton, NQTheme.backButton(), 0);
     lv_obj_set_size(backButton, 210, 48);

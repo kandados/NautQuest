@@ -12,6 +12,8 @@ public:
 
     const char* currentMission() const;
 
+    void completeStep(int index);
+
     bool rewardAlreadyClaimed() const;
     void markRewardClaimed();
 

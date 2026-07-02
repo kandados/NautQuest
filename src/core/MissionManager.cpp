@@ -1,6 +1,9 @@
 #include "MissionManager.h"
+#include "ExperienceManager.h"
 
 #include <Arduino.h>
+
+
 
 void MissionManager::begin()
 {
@@ -30,6 +33,41 @@ Mission& MissionManager::activeMission()
 const char* MissionManager::currentMission() const
 {
     return currentActiveMission.title();
+}
+
+void MissionManager::completeStep(int index)
+{
+    if (index < 0 || index >= currentActiveMission.stepCount())
+    {
+        Serial.println("[MissionManager] Paso fuera de rango");
+        return;
+    }
+
+    MissionStep& currentStep = currentActiveMission.step(index);
+
+    if (currentStep.isCompleted())
+    {
+        Serial.println("[MissionManager] El paso ya estaba completado");
+        return;
+    }
+
+    currentStep.markCompleted();
+
+    Serial.print("[MissionManager] Paso completado: ");
+    Serial.println(currentStep.title());
+
+    Serial.print("[MissionManager] Nuevo progreso: ");
+    Serial.print(currentActiveMission.progress());
+    Serial.println("%");
+
+    if (currentActiveMission.isCompleted() && !rewardAlreadyClaimed())
+    {
+        Serial.println("[MissionManager] ¡Mision completada!");
+
+        NQExperience.addXP(currentActiveMission.experienceReward());
+
+        markRewardClaimed();
+    }
 }
 
 bool MissionManager::rewardAlreadyClaimed() const
