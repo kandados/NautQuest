@@ -12,8 +12,12 @@ public:
 
     const char* currentMission() const;
 
+    bool rewardAlreadyClaimed() const;
+    void markRewardClaimed();
+
 private:
     Mission currentActiveMission;
+    bool rewardClaimed = false;
 };
 
 extern MissionManager NQMission;

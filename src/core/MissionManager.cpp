@@ -5,6 +5,7 @@
 void MissionManager::begin()
 {
     Serial.println("[MissionManager] Inicializando...");
+
     Serial.print("[MissionManager] Mision activa: ");
     Serial.println(currentActiveMission.title());
 
@@ -29,6 +30,18 @@ Mission& MissionManager::activeMission()
 const char* MissionManager::currentMission() const
 {
     return currentActiveMission.title();
+}
+
+bool MissionManager::rewardAlreadyClaimed() const
+{
+    return rewardClaimed;
+}
+
+void MissionManager::markRewardClaimed()
+{
+    rewardClaimed = true;
+
+    Serial.println("[MissionManager] Recompensa marcada como entregada");
 }
 
 MissionManager NQMission;

@@ -12,6 +12,7 @@ public:
     const char* currentObjective() const;
 
     int progress() const;
+    bool isCompleted() const;
     int experienceReward() const;
 
     int stepCount() const;

@@ -34,6 +34,11 @@ int Mission::progress() const
     return (completedSteps * 100) / MAX_STEPS;
 }
 
+bool Mission::isCompleted() const
+{
+    return progress() >= 100;
+}
+
 int Mission::experienceReward() const
 {
     return rewardExp;
