@@ -29,12 +29,14 @@ int ExperienceManager::xpForNextLevel() const
     return level * 100;
 }
 
-void ExperienceManager::addXP(int amount)
+bool ExperienceManager::addXP(int amount)
 {
     if (amount <= 0)
     {
-        return;
+        return false;
     }
+
+    int previousLevel = level;
 
     xp += amount;
 
@@ -42,6 +44,8 @@ void ExperienceManager::addXP(int amount)
     Serial.println(amount);
 
     recalculateLevel();
+
+    return level != previousLevel;
 }
 
 void ExperienceManager::recalculateLevel()

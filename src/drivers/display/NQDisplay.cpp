@@ -5,6 +5,7 @@
 #include "Arduino_GFX_Library.h"
 
 #include "drivers/touch/NQTouch.h"
+#include "assets/nautquest_boot_logo.h"
 
 // Pines oficiales Waveshare ESP32-S3-Touch-AMOLED-1.75
 #define LCD_SDIO0 4
@@ -148,10 +149,7 @@ void NautQuestDisplay::showMascotBootScreen()
     lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
 
     lv_obj_t *label = lv_label_create(lv_scr_act());
-
-    lv_label_set_text(label,
-                      " (^_^)\n"
-                      );
+    lv_label_set_text(label, " (^_^)\n");
 
     lv_obj_set_style_text_color(label, lv_color_white(), 0);
     lv_obj_set_style_text_font(label, &lv_font_montserrat_36, 0);
@@ -167,17 +165,9 @@ void NautQuestDisplay::showLogoBootScreen()
     lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), 0);
     lv_obj_set_style_bg_opa(lv_scr_act(), LV_OPA_COVER, 0);
 
-    lv_obj_t *title = lv_label_create(lv_scr_act());
-    lv_label_set_text(title, "NautQuest");
-    lv_obj_set_style_text_color(title, lv_color_white(), 0);
-    lv_obj_set_style_text_font(title, &lv_font_montserrat_48, 0);
-    lv_obj_align(title, LV_ALIGN_CENTER, 0, -25);
-
-    lv_obj_t *subtitle = lv_label_create(lv_scr_act());
-    lv_label_set_text(subtitle, "By KandadosDev");
-    lv_obj_set_style_text_color(subtitle, lv_color_white(), 0);
-    lv_obj_set_style_text_font(subtitle, &lv_font_montserrat_24, 0);
-    lv_obj_align(subtitle, LV_ALIGN_CENTER, 0, 35);
+    lv_obj_t *logo = lv_img_create(lv_scr_act());
+    lv_img_set_src(logo, &nautquest_boot_logo);
+    lv_obj_center(logo);
 
     lv_timer_handler();
 }

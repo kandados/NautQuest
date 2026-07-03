@@ -9,7 +9,7 @@ public:
     int currentLevel() const;
     int xpForNextLevel() const;
 
-    void addXP(int amount);
+    bool addXP(int amount);
 
 private:
     int xp = 0;

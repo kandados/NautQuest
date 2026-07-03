@@ -1,9 +1,8 @@
 #include "MissionManager.h"
 #include "ExperienceManager.h"
+#include "NotificationManager.h"
 
 #include <Arduino.h>
-
-
 
 void MissionManager::begin()
 {
@@ -61,13 +60,30 @@ void MissionManager::completeStep(int index)
     Serial.println("%");
 
     if (currentActiveMission.isCompleted() && !rewardAlreadyClaimed())
+{
+    Serial.println("[MissionManager] ¡Mision completada!");
+
+    NQNotification.show(
+        NotificationType::MissionCompleted,
+        "MISION COMPLETADA",
+        "+250 EXP"
+    );
+
+    bool levelUp = NQExperience.addXP(currentActiveMission.experienceReward());
+
+    if (levelUp)
     {
-        Serial.println("[MissionManager] ¡Mision completada!");
+        Serial.println("[MissionManager] ¡El usuario ha subido de nivel!");
 
-        NQExperience.addXP(currentActiveMission.experienceReward());
-
-        markRewardClaimed();
+        NQNotification.show(
+            NotificationType::LevelUp,
+            "NIVEL SUPERADO",
+            "Nuevo nivel alcanzado"
+        );
     }
+
+    markRewardClaimed();
+}
 }
 
 bool MissionManager::rewardAlreadyClaimed() const

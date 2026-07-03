@@ -1,6 +1,7 @@
 #include "BootManager.h"
 
 #include <Arduino.h>
+#include "core/NotificationManager.h"
 #include "core/ExperienceManager.h"
 #include "core/NavigationManager.h"
 #include "core/theme/ThemeManager.h"
@@ -16,15 +17,16 @@ void BootManager::begin()
     NQDisplay.begin();
     NQMission.begin();
     NQExperience.begin();
+    NQNotification.begin();
     NQTheme.begin();
     NQNavigation.begin();
 
-    phase = BootPhase::Mascot;
+    phase = BootPhase::Logo;
     phaseStartTime = millis();
 
-    NQDisplay.showMascotBootScreen();
+    NQDisplay.showLogoBootScreen();
 
-    Serial.print("[BootManager] Fase inicial: Mascota ms=");
+    Serial.print("[BootManager] Fase inicial: Logo ms=");
     Serial.println(millis());
 }
 
@@ -32,17 +34,7 @@ void BootManager::update()
 {
     unsigned long now = millis();
 
-    if (phase == BootPhase::Mascot && now - phaseStartTime >= 2500)
-    {
-        phase = BootPhase::Logo;
-        phaseStartTime = now;
-
-        Serial.print("[BootManager] Fase: Logo ms=");
-        Serial.println(millis());
-
-        NQDisplay.showLogoBootScreen();
-    }
-    else if (phase == BootPhase::Logo && now - phaseStartTime >= 2500)
+    if (phase == BootPhase::Logo && now - phaseStartTime >= 2500)
     {
         phase = BootPhase::Adventure;
         phaseStartTime = now;
@@ -62,7 +54,7 @@ void BootManager::update()
         Serial.println("[BootManager] Mostrando Inicio");
         NQScreen.show(ScreenID::Desktop);
     }
-
+    NQNotification.update();
     NQDisplay.update();
 }
 

@@ -7,7 +7,27 @@
 #include "core/NavigationManager.h"
 #include "core/theme/ThemeManager.h"
 
+static int testStepIndex = 2;
 
+static void completeStepButtonEventHandler(lv_event_t *event)
+{
+    if (lv_event_get_code(event) == LV_EVENT_CLICKED)
+    {
+        Serial.print("[MissionDetailScreen] Completar paso temporal: ");
+        Serial.println(testStepIndex);
+
+        NQMission.completeStep(testStepIndex);
+
+        testStepIndex++;
+
+        if (testStepIndex >= NQMission.activeMission().stepCount())
+        {
+            testStepIndex = 2;
+        }
+
+        NQMissionDetail.show();
+    }
+}
 
 static void backButtonEventHandler(lv_event_t *event)
 {
@@ -90,15 +110,25 @@ void MissionDetailScreen::show()
     lv_obj_set_style_text_font(progressLabel, &lv_font_montserrat_18, 0);
     lv_obj_align(progressLabel, LV_ALIGN_CENTER, 145, 117);
 
+    lv_obj_t *completeButton = lv_btn_create(lv_scr_act());
+    lv_obj_set_size(completeButton, 155, 38);
+    lv_obj_align(completeButton, LV_ALIGN_CENTER, -82, 170);
+    lv_obj_add_event_cb(completeButton, completeStepButtonEventHandler, LV_EVENT_CLICKED, nullptr);
+
+    lv_obj_t *completeLabel = lv_label_create(completeButton);
+    lv_label_set_text(completeLabel, "Completar");
+    lv_obj_set_style_text_font(completeLabel, &lv_font_montserrat_16, 0);
+    lv_obj_center(completeLabel);
+   
     lv_obj_t *backButton = lv_btn_create(lv_scr_act());
     lv_obj_set_style_bg_color(backButton, NQTheme.backButton(), 0);
-    lv_obj_set_size(backButton, 210, 48);
-    lv_obj_align(backButton, LV_ALIGN_CENTER, 0, 188);
+    lv_obj_set_size(backButton, 155, 38);
+    lv_obj_align(backButton, LV_ALIGN_CENTER, 82, 170);
     lv_obj_add_event_cb(backButton, backButtonEventHandler, LV_EVENT_CLICKED, nullptr);
 
     lv_obj_t *backLabel = lv_label_create(backButton);
     lv_label_set_text(backLabel, "Volver");
-    lv_obj_set_style_text_font(backLabel, &lv_font_montserrat_18, 0);
+    lv_obj_set_style_text_font(backLabel, &lv_font_montserrat_16, 0);
     lv_obj_center(backLabel);
 
     lv_timer_handler();
