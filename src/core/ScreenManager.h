@@ -9,6 +9,7 @@ enum class ScreenID
     MissionDetail,
     Logbook,
     Oracle,
+    Developer,
     Compass,
     Calendar,
     AI

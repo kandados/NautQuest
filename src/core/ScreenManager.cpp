@@ -6,6 +6,7 @@
 #include "ui/settings/SettingsScreen.h"
 #include "ui/missions/MissionsScreen.h"
 #include "ui/missions/MissionDetailScreen.h"
+#include "ui/developer/DeveloperScreen.h"
 #include "ui/logbook/LogbookScreen.h"
 #include "ui/oracle/OracleScreen.h"
 
@@ -36,6 +37,11 @@ void ScreenManager::show(ScreenID screen)
         case ScreenID::Desktop:
             Serial.println("[ScreenManager] Showing DesktopScreen");
             NQDesktop.show();
+            break;
+
+        case ScreenID::Developer:
+            Serial.println("[ScreenManager] Showing DeveloperScreen");
+            NQDeveloper.show();
             break;
 
         case ScreenID::Settings:
@@ -116,6 +122,9 @@ const char* ScreenManager::screenName(ScreenID screen) const
         case ScreenID::MissionDetail:
             return "Detalle mision";
 
+        case ScreenID::Developer:
+            return "Developer";
+
         case ScreenID::Logbook:
             return "Bitacora";
 
@@ -135,5 +144,4 @@ const char* ScreenManager::screenName(ScreenID screen) const
             return "Unknown";
     }
 }
-
 ScreenManager NQScreen;
