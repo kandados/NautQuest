@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-#include "ui/desktop/DesktopScreen.h"
+#include "ui/dashboard/DashboardScreen.h"
 #include "ui/settings/SettingsScreen.h"
 #include "ui/missions/MissionsScreen.h"
 #include "ui/missions/MissionDetailScreen.h"
@@ -35,8 +35,8 @@ void ScreenManager::show(ScreenID screen)
             break;
 
         case ScreenID::Desktop:
-            Serial.println("[ScreenManager] Showing DesktopScreen");
-            NQDesktop.show();
+            Serial.println("[ScreenManager] Showing DashboardScreen / Inicio");
+            NQDashboard.show();
             break;
 
         case ScreenID::Developer:

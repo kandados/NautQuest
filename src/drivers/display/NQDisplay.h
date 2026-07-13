@@ -7,6 +7,7 @@ public:
     void showMascotBootScreen();
     void showLogoBootScreen();
     void showAdventureBootScreen();
+    void showHomeScreen();
 
     void update();
 };
