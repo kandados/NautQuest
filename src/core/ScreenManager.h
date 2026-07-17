@@ -5,10 +5,12 @@ enum class ScreenID
     Boot,
     Desktop,
 
+    NautyAlive,
+
     Settings,
     SettingsDisplay,
     SettingsSound,
-    
+
     Missions,
     MissionDetail,
     Logbook,

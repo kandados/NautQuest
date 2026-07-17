@@ -10,6 +10,15 @@ void NavigationManager::begin()
 
 void NavigationManager::goTo(ScreenID screen)
 {
+    /*
+     * Evita añadir al historial una navegación hacia
+     * la pantalla que ya está activa.
+     */
+    if (screen == NQScreen.currentScreen())
+    {
+        return;
+    }
+
     if (historyCount < MAX_HISTORY)
     {
         history[historyCount] = NQScreen.currentScreen();
@@ -17,7 +26,7 @@ void NavigationManager::goTo(ScreenID screen)
     }
 
     Serial.print("[NavigationManager] Navegando a: ");
-    Serial.println(NQScreen.currentScreenName());
+    Serial.println(NQScreen.nameOf(screen));
 
     NQScreen.show(screen);
 }
@@ -33,7 +42,8 @@ void NavigationManager::goBack()
     historyCount--;
     ScreenID previous = history[historyCount];
 
-    Serial.println("[NavigationManager] Volviendo a pantalla anterior");
+    Serial.print("[NavigationManager] Volviendo a: ");
+    Serial.println(NQScreen.nameOf(previous));
 
     NQScreen.show(previous);
 }

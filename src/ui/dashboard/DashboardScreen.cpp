@@ -115,18 +115,14 @@ static void goCalendar(lv_event_t *event)
 
 static void goNauty(lv_event_t *event)
 {
-    if (
-        lv_event_get_code(event) == LV_EVENT_CLICKED &&
-        tileview != nullptr
-    )
+    if (lv_event_get_code(event) == LV_EVENT_CLICKED)
     {
-        Serial.println("[Dashboard] Volviendo a Nauty");
+        Serial.println(
+            "[Dashboard] Abriendo NautyAliveScreen"
+        );
 
-        lv_obj_set_tile_id(
-            tileview,
-            HOME_COLUMN,
-            HOME_ROW,
-            LV_ANIM_ON
+        NQNavigation.goTo(
+            ScreenID::NautyAlive
         );
     }
 }
@@ -398,6 +394,13 @@ static void buildHomeTile(lv_obj_t *tile)
 {
     configureTile(tile);
 
+    /*
+     * Pantalla inicial del Dashboard:
+     * cuerpo de Nauty, saludo, nivel y experiencia.
+     *
+     * Esta portada no abre ninguna pantalla al pulsarla.
+     * Desde aquí comienza la navegación mediante gestos.
+     */
     createImageFromCache(
         tile,
         HOME_IMAGE_PATH

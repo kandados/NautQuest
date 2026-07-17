@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "ui/companion/NautyAliveScreen.h"
 #include "ui/dashboard/DashboardScreen.h"
 #include "ui/developer/DeveloperScreen.h"
 #include "ui/logbook/LogbookScreen.h"
@@ -43,6 +44,13 @@ void ScreenManager::show(ScreenID screen)
                 "[ScreenManager] Showing DashboardScreen / Inicio"
             );
             NQDashboard.show();
+            break;
+
+        case ScreenID::NautyAlive:
+            Serial.println(
+                "[ScreenManager] Showing NautyAliveScreen"
+            );
+            NQNautyAlive.show();
             break;
 
         case ScreenID::Settings:
@@ -159,6 +167,9 @@ const char *ScreenManager::screenName(
 
         case ScreenID::Desktop:
             return "Inicio";
+
+        case ScreenID::NautyAlive:
+            return "Nauty vivo";
 
         case ScreenID::Settings:
             return "Ajustes";
