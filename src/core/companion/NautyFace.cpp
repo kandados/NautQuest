@@ -26,7 +26,7 @@ namespace
     constexpr lv_coord_t ANTENNA_BASE_Y = 112;
     constexpr lv_coord_t ANTENNA_LENGTH = 48;
 
-    constexpr uint32_t FACE_WHITE = 0xF5F7FA;
+    constexpr uint32_t FACE_WHITE = 0x72E8FF;
     constexpr uint32_t FACE_DARK = 0x111820;
     constexpr uint32_t FACE_BLUE = 0x28B8FF;
 }
@@ -379,7 +379,8 @@ void NautyFace::createEye(
 
 void NautyFace::reset()
 {
-    eyesOpenPercentage_ = 100;
+    leftEyeOpenPercentage_ = 100;
+    rightEyeOpenPercentage_ = 100;
 
     lookX_ = 0;
     lookY_ = 0;
@@ -412,10 +413,19 @@ void NautyFace::setEyesOpen(
     uint8_t percentage
 )
 {
-    eyesOpenPercentage_ =
-        percentage > 100
-            ? 100
-            : percentage;
+    setEyesOpen(percentage, percentage);
+}
+
+void NautyFace::setEyesOpen(
+    uint8_t leftPercentage,
+    uint8_t rightPercentage
+)
+{
+    leftEyeOpenPercentage_ =
+        leftPercentage > 100 ? 100 : leftPercentage;
+
+    rightEyeOpenPercentage_ =
+        rightPercentage > 100 ? 100 : rightPercentage;
 
     updateEyelids();
 }
@@ -490,6 +500,44 @@ void NautyFace::setAntennaTilt(
     updateAntenna();
 }
 
+void NautyFace::setAntennaVisible(bool visible)
+{
+    if (antennaStem_ == nullptr || antennaTip_ == nullptr)
+    {
+        return;
+    }
+
+    if (visible)
+    {
+        lv_obj_clear_flag(antennaStem_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(antennaTip_, LV_OBJ_FLAG_HIDDEN);
+    }
+    else
+    {
+        lv_obj_add_flag(antennaStem_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(antennaTip_, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+void NautyFace::setTransform(
+    int16_t offsetX,
+    int16_t offsetY,
+    uint16_t zoom,
+    int16_t angle
+)
+{
+    if (root_ == nullptr)
+    {
+        return;
+    }
+
+    lv_obj_align(root_, LV_ALIGN_CENTER, offsetX, offsetY);
+    lv_obj_set_style_transform_pivot_x(root_, SCREEN_SIZE / 2, 0);
+    lv_obj_set_style_transform_pivot_y(root_, SCREEN_SIZE / 2, 0);
+    lv_obj_set_style_transform_zoom(root_, zoom, 0);
+    lv_obj_set_style_transform_angle(root_, angle, 0);
+}
+
 bool NautyFace::isReady() const
 {
     return root_ != nullptr;
@@ -505,24 +553,34 @@ void NautyFace::updateEyelids()
         return;
     }
 
-    const lv_coord_t closedHeight =
+    const lv_coord_t leftClosedHeight =
         static_cast<lv_coord_t>(
             EYE_HEIGHT -
             (
                 EYE_HEIGHT *
-                eyesOpenPercentage_
+                leftEyeOpenPercentage_
+            ) /
+            100
+        );
+
+    const lv_coord_t rightClosedHeight =
+        static_cast<lv_coord_t>(
+            EYE_HEIGHT -
+            (
+                EYE_HEIGHT *
+                rightEyeOpenPercentage_
             ) /
             100
         );
 
     lv_obj_set_height(
         leftEyelid_,
-        closedHeight
+        leftClosedHeight
     );
 
     lv_obj_set_height(
         rightEyelid_,
-        closedHeight
+        rightClosedHeight
     );
 
     lv_obj_move_foreground(

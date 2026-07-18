@@ -19,6 +19,7 @@ public:
     void reset();
 
     void setEyesOpen(uint8_t percentage);
+    void setEyesOpen(uint8_t leftPercentage, uint8_t rightPercentage);
     void setLookDirection(int16_t x, int16_t y);
 
     void setEyebrowLeft(int16_t offsetY);
@@ -26,6 +27,13 @@ public:
 
     void setMouthShape(NautyMouthShape shape);
     void setAntennaTilt(int16_t offsetX);
+    void setAntennaVisible(bool visible);
+    void setTransform(
+        int16_t offsetX,
+        int16_t offsetY,
+        uint16_t zoom,
+        int16_t angle
+    );
 
     bool isReady() const;
 
@@ -64,7 +72,8 @@ private:
     lv_obj_t *antennaStem_ = nullptr;
     lv_obj_t *antennaTip_ = nullptr;
 
-    uint8_t eyesOpenPercentage_ = 100;
+    uint8_t leftEyeOpenPercentage_ = 100;
+    uint8_t rightEyeOpenPercentage_ = 100;
 
     int16_t lookX_ = 0;
     int16_t lookY_ = 0;

@@ -3,6 +3,8 @@
 #include "core/BootManager.h"
 #include "nauty/NautyBehavior.h"
 #include "storage/AssetManager.h"
+#include "ui/companion/NautyAnimator.h"
+#include "ui/companion/NautyVideoPlayer.h"
 
 NautyBehavior nautyBehavior;
 
@@ -15,7 +17,7 @@ void setup()
     Serial.println("========================================");
     Serial.println("            NautQuest OS");
     Serial.println("========================================");
-    Serial.println("Sprint 019.1 - Dar vida a Nauty");
+    Serial.println("Sprint 019.1 - Estados conectados a NautyFace");
     Serial.println("----------------------------------------");
 
     const bool assetsReady = NQAssets.begin();
@@ -47,6 +49,8 @@ void loop()
 {
     NQBoot.update();
     nautyBehavior.update();
+    NQNautyAnimator.update();
+    NQNautyVideo.update();
 
-    delay(5);
+    delay(NQNautyVideo.isPlaying() ? 1 : 5);
 }

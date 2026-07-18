@@ -4,10 +4,14 @@
 #include <lvgl.h>
 
 #include "core/NavigationManager.h"
+#include "nauty/NautyBehavior.h"
 #include "storage/AssetManager.h"
 #include "ui/companion/NautyAnimator.h"
+#include "ui/companion/NautyVideoPlayer.h"
 
 NautyAliveScreen NQNautyAlive;
+
+extern NautyBehavior nautyBehavior;
 
 namespace
 {
@@ -164,6 +168,43 @@ namespace
 
         return button;
     }
+
+    lv_obj_t *createStateTouchArea(
+        lv_obj_t *parent,
+        lv_event_cb_t happyCallback,
+        lv_event_cb_t curiousCallback
+    )
+    {
+        lv_obj_t *touchArea = lv_obj_create(parent);
+
+        lv_obj_set_size(touchArea, 300, 300);
+        lv_obj_center(touchArea);
+
+        lv_obj_set_style_bg_opa(touchArea, LV_OPA_TRANSP, 0);
+        lv_obj_set_style_border_width(touchArea, 0, 0);
+        lv_obj_set_style_outline_width(touchArea, 0, 0);
+        lv_obj_set_style_shadow_width(touchArea, 0, 0);
+        lv_obj_set_style_pad_all(touchArea, 0, 0);
+
+        lv_obj_clear_flag(touchArea, LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_add_flag(touchArea, LV_OBJ_FLAG_CLICKABLE);
+
+        lv_obj_add_event_cb(
+            touchArea,
+            happyCallback,
+            LV_EVENT_SHORT_CLICKED,
+            nullptr
+        );
+
+        lv_obj_add_event_cb(
+            touchArea,
+            curiousCallback,
+            LV_EVENT_LONG_PRESSED,
+            nullptr
+        );
+
+        return touchArea;
+    }
 }
 
 void NautyAliveScreen::backEvent(
@@ -182,11 +223,61 @@ void NautyAliveScreen::backEvent(
         "[NautyAliveScreen] Volviendo a la portada de Nauty"
     );
 
+    NQNautyAnimator.stop();
+    NQNautyVideo.stop();
+    nautyBehavior.returnToIdle();
     NQNavigation.goBack();
+}
+
+void NautyAliveScreen::happyEvent(
+    lv_event_t *event
+)
+{
+    if (lv_event_get_code(event) != LV_EVENT_SHORT_CLICKED)
+    {
+        return;
+    }
+
+    Serial.println(
+        "[NautyAliveScreen] Toque recibido: HAPPY"
+    );
+
+    nautyBehavior.requestState(
+        NautyState::HAPPY,
+        5000,
+        NautyPriority::NORMAL
+    );
+}
+
+void NautyAliveScreen::curiousEvent(
+    lv_event_t *event
+)
+{
+    if (lv_event_get_code(event) != LV_EVENT_LONG_PRESSED)
+    {
+        return;
+    }
+
+    Serial.println(
+        "[NautyAliveScreen] Pulsacion mantenida: CURIOUS"
+    );
+
+    nautyBehavior.requestState(
+        NautyState::CURIOUS,
+        5000,
+        NautyPriority::NORMAL
+    );
 }
 
 void NautyAliveScreen::show()
 {
+    /*
+     * Detiene cualquier instancia anterior antes de que LVGL
+     * elimine sus objetos.
+     */
+    NQNautyAnimator.stop();
+    NQNautyVideo.stop();
+
     /*
      * Eliminamos primero todos los objetos pertenecientes
      * a la pantalla anterior.
@@ -225,9 +316,24 @@ void NautyAliveScreen::show()
      * NautyAnimator se encarga de cargar y mostrar
      * el casco y, posteriormente, sus animaciones.
      */
-    NQNautyAnimator.begin(
-        lv_scr_act()
+    const bool videoReady = NQNautyVideo.begin(
+        lv_scr_act(),
+        "/ui/nauty_video/idle.nqv"
     );
+
+    if (!videoReady)
+    {
+        NQNautyAnimator.begin(lv_scr_act());
+    }
+
+    if (videoReady)
+    {
+        createStateTouchArea(
+            lv_scr_act(),
+            happyEvent,
+            curiousEvent
+        );
+    }
 
     /*
      * El botón se crea después del animador para que
@@ -245,6 +351,8 @@ void NautyAliveScreen::show()
     lv_timer_handler();
 
     Serial.println(
-        "[NautyAliveScreen] NautyAnimator iniciado"
+        videoReady
+            ? "[NautyAliveScreen] Reproductor de estados iniciado"
+            : "[NautyAliveScreen] NautyAnimator de respaldo iniciado"
     );
 }

@@ -17,3 +17,6 @@
 
 # Logs
 *.log
+
+# Animaciones de Nauty para microSD
+sdcard/ui/nauty_video/*.nqv
